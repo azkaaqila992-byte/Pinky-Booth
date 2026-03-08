@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>✦ Pinky Booth ✦ Photobooth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Dancing+Script:wght@700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --rose:   #f472b6;
+  --rose-l: #fce7f3;
+  --rose-d: #be185d;
+  --blush:  #fff1f5;
+  --ink:    #1a0a12;
+  --muted:  #9d7189;
+  --white:  #ffffff;
+  --r:      24px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--blush);
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--ink);
+}
+
+/* ─── PAGES ─── */
+.page{display:none;min-height:100vh}
+.page.active{display:flex;flex-direction:column}
+
+/* ══════════════════════════════════
+   LANDING PAGE
+══════════════════════════════════ */
+#pgLanding {
+  background: linear-gradient(160deg,#fff0f5 0%,#fce7f3 60%,#fbd5e8 100%);
+  align-items:center; justify-content:center;
+  position:relative; overflow:hidden; padding:24px 16px;
+}
+#pgLanding::before {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 15% 20%,#fbcfe880 0%,transparent 45%),
+    radial-gradient(circle at 85% 80%,#f9a8d460 0%,transparent 45%);
+  pointer-events:none;
+}
+
+/* Floating strips */
+.hero-strips {
+  position:absolute; inset:0; pointer-events:none; overflow:hidden;
+}
+.hero-strip {
+  position:absolute;
+  width:72px;
+  background:white;
+  border-radius:8px;
+  box-shadow:0 8px 24px rgba(244,114,182,.2);
+  display:flex; flex-direction:column; gap:3px; padding:6px;
+  animation:floatStrip 6s ease-in-out infinite;
+}
+.hero-strip .ph {
+  aspect-ratio:1/1; border-radius:4px;
+  background:linear-gradient(135deg,#fce7f3,#fbcfe8);
+}
+.hero-strip:nth-child(1){left:4%; top:15%; animation-delay:0s; transform:rotate(-8deg)}
+.hero-strip:nth-child(2){right:5%; top:10%; animation-delay:-2s; transform:rotate(7deg)}
+.hero-strip:nth-child(3){left:8%; bottom:12%; animation-delay:-4s; transform:rotate(5deg); width:60px}
+.hero-strip:nth-child(4){right:7%; bottom:18%; animation-delay:-1s; transform:rotate(-6deg); width:60px}
+@keyframes floatStrip {
+  0%,100%{transform:rotate(var(--r,0deg)) translateY(0)}
+  50%{transform:rotate(var(--r,0deg)) translateY(-14px)}
+}
+
+.hero-center {
+  position:relative; z-index:1;
+  display:flex; flex-direction:column; align-items:center; gap:20px;
+  text-align:center; max-width:480px;
+}
+
+.hero-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:white; border:1.5px solid #fcd7e8;
+  padding:6px 16px; border-radius:40px;
+  font-size:12px; font-weight:500; color:var(--rose-d);
+  box-shadow:0 2px 12px rgba(244,114,182,.15);
+  animation:fadeUp .6s ease both;
+}
+
+.hero-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(52px,12vw,88px);
+  font-weight:900;
+  color:var(--rose-d);
+  letter-spacing:-2px;
+  line-height:.95;
+  animation:fadeUp .6s .1s ease both;
+}
+.hero-title span{font-style:italic; color:var(--rose)}
+
+.hero-sub {
+  font-size:15px; color:var(--muted);
+  line-height:1.6; animation:fadeUp .6s .2s ease both;
+}
+
+.hero-cta {
+  background:linear-gradient(135deg,#f472b6,#ec4899);
+  color:white; border:none;
+  padding:18px 48px;
+  border-radius:60px;
+  font-family:'Playfair Display',serif;
+  font-size:18px; letter-spacing:.5px;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(236,72,153,.4);
+  transition:transform .2s,box-shadow .2s;
+  animation:fadeUp .6s .3s ease both;
+}
+.hero-cta:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(236,72,153,.5)}
+
+.hero-note {
+  font-size:12px; color:var(--muted);
+  animation:fadeUp .6s .4s ease both;
+}
+
+/* ── NAVBAR ── */
+.landing-nav {
+  position:absolute; top:0; left:0; right:0; z-index:10;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 28px;
+}
+.nav-logo {
+  font-family:'Playfair Display',serif;
+  font-size:20px; font-weight:900;
+  color:var(--rose-d); letter-spacing:-.5px;
+  display:flex; align-items:center; gap:8px;
+}
+.nav-logo span{font-style:italic;color:var(--rose)}
+.nav-pill {
+  background:white;
+  border:1.5px solid #fcd7e8;
+  padding:6px 16px; border-radius:40px;
+  font-size:11px; font-weight:600;
+  color:var(--rose-d); letter-spacing:.5px;
+  text-transform:uppercase;
+  box-shadow:0 2px 12px rgba(244,114,182,.15);
+}
+
+/* ── FEATURE CHIPS ── */
+.feature-chips {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:8px;
+  animation:fadeUp .6s .35s ease both;
+}
+.chip {
+  display:inline-flex; align-items:center; gap:5px;
+  background:white;
+  border:1.5px solid #fcd7e8;
+  padding:7px 14px; border-radius:40px;
+  font-size:12px; font-weight:500;
+  color:var(--rose-d);
+  box-shadow:0 2px 8px rgba(244,114,182,.12);
+  white-space:nowrap;
+}
+
+/* ── HOW IT WORKS ── */
+.how-it-works {
+  display:flex; gap:0; align-items:flex-start;
+  animation:fadeUp .6s .45s ease both;
+  background:white;
+  border:1.5px solid #fce7f3;
+  border-radius:20px;
+  padding:18px 20px;
+  box-shadow:0 4px 20px rgba(244,114,182,.1);
+  width:100%; max-width:400px;
+}
+.how-step {
+  display:flex; flex-direction:column; align-items:center;
+  gap:6px; flex:1; text-align:center;
+  padding:0 8px;
+}
+.how-step .step-icon {
+  width:40px; height:40px; border-radius:50%;
+  background:var(--rose-l);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+}
+.how-step .step-num {
+  font-size:9px; font-weight:700; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--rose);
+}
+.how-step .step-label {
+  font-size:11px; font-weight:600; color:var(--ink); line-height:1.3;
+}
+.how-divider {
+  width:1px; background:linear-gradient(to bottom,transparent,#f0d0df,transparent);
+  align-self:stretch; flex-shrink:0; margin-top:8px;
+}
+
+/* ── ANIMATED PREVIEW STRIPS ── */
+.preview-strips-row {
+  display:flex; gap:12px; align-items:flex-end;
+  animation:fadeUp .6s .5s ease both;
+  overflow:hidden;
+}
+.pstrip {
+  display:flex; flex-direction:column; gap:3px;
+  padding:8px; background:white; border-radius:10px;
+  box-shadow:0 6px 20px rgba(244,114,182,.18);
+  flex-shrink:0;
+}
+.pstrip .ps-ph {
+  width:54px; height:40px; border-radius:5px;
+  background:linear-gradient(135deg,#fce7f3,#fbcfe8);
+}
+.pstrip:nth-child(1){ transform:rotate(-5deg) translateY(4px); animation:floatStrip 5s ease-in-out infinite; --r:-5deg }
+.pstrip:nth-child(2){ transform:rotate(0deg);  animation:floatStrip 5s .8s ease-in-out infinite; --r:0deg }
+.pstrip:nth-child(3){ transform:rotate(5deg) translateY(4px);  animation:floatStrip 5s 1.6s ease-in-out infinite; --r:5deg }
+
+/* tinted frames */
+.pstrip.pink  { background:linear-gradient(135deg,#fce7f3,#fbd5e8) }
+.pstrip.dark  { background:#1a0a12 }
+.pstrip.dark .ps-ph { background:linear-gradient(135deg,#3d1a2e,#2a0f1e) }
+.pstrip.mint  { background:linear-gradient(135deg,#d1fae5,#a7f3d0) }
+.pstrip.mint .ps-ph { background:linear-gradient(135deg,#bbf7d0,#6ee7b7) }
+
+/* make landing page a column to hold navbar + hero + bottom */
+#pgLanding { justify-content:space-between; padding-top:0; padding-bottom:0; }
+
+.landing-body {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  padding:80px 16px 20px;
+}
+
+.landing-bottom {
+  position:relative; z-index:1;
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+  padding:0 16px 36px;
+  width:100%;
+}
+
+
+
+/* decorative floating hearts */
+.hearts { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+.heart {
+  position:absolute; font-size:1.2rem; opacity:0;
+  animation:riseHeart linear infinite;
+}
+@keyframes riseHeart {
+  0%{opacity:0;transform:translateY(100vh) scale(.5)}
+  10%{opacity:.6}
+  90%{opacity:.6}
+  100%{opacity:0;transform:translateY(-10vh) scale(1.2)}
+}
+
+/* ══════════════════════════════════
+   LAYOUT PICKER PAGE
+══════════════════════════════════ */
+#pgLayout {
+  background:var(--blush);
+  align-items:center; justify-content:flex-start;
+  padding:40px 16px 60px;
+}
+.layout-header {
+  text-align:center; margin-bottom:32px;
+}
+.layout-header h2 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(24px,5vw,36px); font-weight:700;
+  color:var(--rose-d); margin-bottom:8px;
+}
+.layout-header p{font-size:14px;color:var(--muted)}
+
+.layout-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:16px; width:100%; max-width:640px;
+}
+.layout-card {
+  background:white; border-radius:18px;
+  border:2px solid transparent;
+  padding:20px 12px 16px;
+  cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  box-shadow:0 4px 16px rgba(244,114,182,.1);
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+  position:relative;
+}
+.layout-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(244,114,182,.2)}
+.layout-card.selected{border-color:var(--rose);box-shadow:0 0 0 4px rgba(244,114,182,.15)}
+.layout-card .lc-preview {
+  display:flex; flex-direction:column; gap:3px;
+  width:52px;
+}
+.layout-card.wide-layout .lc-preview{flex-direction:row; width:80px}
+.lc-ph{
+  background:linear-gradient(135deg,#fce7f3,#fbcfe8);
+  border-radius:4px; flex-shrink:0;
+}
+.layout-card .lc-name{
+  font-size:12px; font-weight:600; color:var(--ink);
+}
+.layout-card .lc-desc{
+  font-size:10px; color:var(--muted); text-align:center;
+}
+.badge-new {
+  position:absolute; top:-6px; right:-6px;
+  background:var(--rose); color:white;
+  font-size:9px; font-weight:700; letter-spacing:.5px;
+  padding:2px 7px; border-radius:20px;
+}
+
+.btn-next {
+  margin-top:28px;
+  background:linear-gradient(135deg,#f472b6,#ec4899);
+  color:white; border:none;
+  padding:16px 52px;
+  border-radius:60px;
+  font-family:'Playfair Display',serif;
+  font-size:16px; cursor:pointer;
+  box-shadow:0 8px 24px rgba(236,72,153,.35);
+  transition:transform .2s,box-shadow .2s;
+}
+.btn-next:hover{transform:translateY(-2px)}
+
+/* ══════════════════════════════════
+   CAMERA PAGE
+══════════════════════════════════ */
+#pgCamera {
+  background:var(--blush);
+  align-items:center; justify-content:flex-start;
+  padding:28px 16px 60px;
+}
+.cam-card {
+  background:white;
+  border-radius:28px;
+  box-shadow:0 4px 8px rgba(244,114,182,.06),0 24px 64px rgba(244,114,182,.14);
+  width:100%; max-width:540px;
+  padding:28px;
+}
+
+.cam-topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px;
+}
+.cam-topbar .wordmark {
+  font-family:'Playfair Display',serif;
+  font-size:22px; color:var(--rose-d);
+}
+.cam-topbar .wordmark span{font-style:italic;color:var(--rose)}
+.btn-icon {
+  width:36px; height:36px; border-radius:50%;
+  border:1.5px solid #f0d0df; background:transparent;
+  color:var(--muted); font-size:14px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:.15s;
+}
+.btn-icon:hover{background:var(--rose-l);color:var(--rose-d)}
+
+.camera-wrap {
+  position:relative;
+  border-radius:18px; overflow:hidden;
+  background:var(--rose-l);
+  border:3px solid #fce7f3;
+  margin-bottom:16px;
+}
+.camera-wrap.ratio-43{aspect-ratio:4/3}
+.camera-wrap.ratio-11{aspect-ratio:1/1}
+.camera-wrap.ratio-169{aspect-ratio:16/9}
+
+#video {
+  width:100%; height:100%; object-fit:cover;
+  transform:scaleX(-1); display:block; transition:filter .3s;
+}
+.flash {
+  position:absolute; inset:0; background:white; opacity:0;
+  pointer-events:none; transition:opacity .08s; z-index:5;
+}
+.flash.go{opacity:1}
+#countdown {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Playfair Display',serif;
+  font-size:100px; font-weight:900;
+  color:white; text-shadow:0 4px 30px rgba(0,0,0,.4);
+  display:none; z-index:10; line-height:1;
+  animation:pulseBig .9s ease infinite;
+}
+@keyframes pulseBig{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.1)}
+}
+.shot-badge {
+  position:absolute; bottom:12px; right:12px;
+  background:rgba(0,0,0,.45); backdrop-filter:blur(8px);
+  color:white; font-size:12px; font-weight:500;
+  padding:4px 10px; border-radius:20px; display:none; z-index:6;
+}
+
+.progress-dots{display:flex;justify-content:center;gap:8px;margin-bottom:16px}
+.pdot{width:8px;height:8px;border-radius:50%;background:#f0d0df;transition:.3s}
+.pdot.filled{background:var(--rose);transform:scale(1.25)}
+
+/* ── FILTER STRIP ── */
+.filter-scroll {
+  display:flex; gap:10px; overflow-x:auto; padding-bottom:4px;
+  scrollbar-width:none; margin-bottom:20px;
+}
+.filter-scroll::-webkit-scrollbar{display:none}
+.filter-thumb {
+  flex-shrink:0; display:flex; flex-direction:column;
+  align-items:center; gap:5px; cursor:pointer;
+}
+.filter-thumb .fpreview {
+  width:52px; height:52px; border-radius:12px;
+  border:2.5px solid transparent;
+  overflow:hidden; transition:.15s;
+  background:linear-gradient(135deg,#fce7f3,#fbcfe8);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+}
+.filter-thumb.active .fpreview{border-color:var(--rose)}
+.filter-thumb .fname{font-size:10px;font-weight:500;color:var(--muted)}
+.filter-thumb.active .fname{color:var(--rose-d)}
+
+/* ── FRAME SECTION ── */
+.section-title{
+  font-size:11px;font-weight:500;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.frame-tabs{display:flex;gap:6px;margin-bottom:10px}
+.ftab{
+  padding:5px 14px; border-radius:20px; font-size:11px; font-weight:600;
+  border:1.5px solid #f0d0df; background:transparent; color:var(--muted);
+  cursor:pointer; transition:.15s;
+}
+.ftab.active{background:var(--rose);border-color:var(--rose);color:white}
+
+.frame-options{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.fopt {
+  width:36px; height:36px; border-radius:10px;
+  cursor:pointer; border:2.5px solid transparent;
+  outline:2px solid transparent;
+  transition:transform .15s,outline .15s;
+  flex-shrink:0; overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.fopt.active{outline:2px solid var(--rose);transform:scale(1.15)}
+
+/* pattern swatches rendered via inline SVG bg */
+.fopt.pat-polka{
+  background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Ccircle cx='5' cy='5' r='2' fill='%23f472b6' opacity='.5'/%3E%3C/svg%3E");
+}
+.fopt.pat-star{
+  background:#fff8fb url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Ctext x='2' y='11' font-size='10'%3E✦%3C/text%3E%3C/svg%3E");
+}
+.fopt.pat-stripe{
+  background:repeating-linear-gradient(45deg,#fce7f3 0,#fce7f3 3px,white 3px,white 9px);
+}
+.fopt.pat-floral{
+  background:#fff0f5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ctext x='2' y='13' font-size='12'%3E🌸%3C/text%3E%3C/svg%3E");
+}
+.fopt.pat-checker{
+  background:repeating-conic-gradient(#fce7f3 0% 25%,white 0% 50%) 0 0/10px 10px;
+}
+.fopt.pat-grid{
+  background:white;
+  background-image:linear-gradient(#f9a8d440 1px,transparent 1px),linear-gradient(90deg,#f9a8d440 1px,transparent 1px);
+  background-size:8px 8px;
+}
+.fopt.grad-sunset{background:linear-gradient(135deg,#fda4af,#fb923c)}
+.fopt.grad-sky{background:linear-gradient(135deg,#bfdbfe,#a5f3fc)}
+.fopt.grad-lavender{background:linear-gradient(135deg,#e9d5ff,#fbcfe8)}
+.fopt.grad-mint{background:linear-gradient(135deg,#bbf7d0,#99f6e4)}
+
+/* shot count */
+.count-row{display:flex;gap:8px}
+.count-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1.5px solid #f0d0df;background:transparent;
+  color:var(--muted);font-size:13px;font-weight:600;
+  cursor:pointer;transition:.15s;
+}
+.count-btn.active{background:var(--rose);border-color:var(--rose);color:white}
+
+/* controls grid */
+.controls-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px;
+}
+.ctrl-block{display:flex;flex-direction:column;gap:6px}
+
+.btn-start {
+  width:100%;padding:18px;border-radius:60px;border:none;
+  background:linear-gradient(135deg,#f472b6,#ec4899);
+  color:white;font-family:'Playfair Display',serif;
+  font-size:18px;letter-spacing:.5px;cursor:pointer;
+  box-shadow:0 8px 24px rgba(236,72,153,.35);
+  transition:transform .18s,box-shadow .18s,opacity .18s;
+}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(236,72,153,.4)}
+.btn-start:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ══════════════════════════════════
+   EDITOR PAGE
+══════════════════════════════════ */
+#pgEditor {
+  background:var(--blush);
+  align-items:center; justify-content:flex-start;
+  padding:28px 16px 60px;
+}
+.editor-card {
+  background:white; border-radius:28px;
+  box-shadow:0 4px 8px rgba(244,114,182,.06),0 24px 64px rgba(244,114,182,.14);
+  width:100%; max-width:860px; padding:28px;
+}
+.editor-layout {
+  display:grid; grid-template-columns:1fr 260px; gap:24px;
+  align-items:start;
+}
+@media(max-width:700px){.editor-layout{grid-template-columns:1fr}}
+
+.strip-preview-wrap {
+  position:relative; align-self:start;
+}
+#editorCanvas {
+  width:100%; border-radius:10px;
+  box-shadow:0 10px 40px rgba(0,0,0,.18);
+  cursor:crosshair;
+  display:block;
+}
+.sticker-on-strip {
+  position:absolute; cursor:move; user-select:none;
+  font-size:32px; line-height:1;
+  transition:outline .1s;
+  touch-action:none;
+}
+.sticker-on-strip.selected{outline:2px dashed var(--rose); border-radius:4px}
+
+/* editor sidebar */
+.editor-sidebar{}
+.etab-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.etab{
+  padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;
+  border:1.5px solid #f0d0df;background:transparent;color:var(--muted);
+  cursor:pointer;transition:.15s;
+}
+.etab.active{background:var(--rose);border-color:var(--rose);color:white}
+
+.sticker-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.sticker-btn{
+  width:44px;height:44px;border-radius:10px;
+  border:1.5px solid #f0d0df;background:var(--blush);
+  font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s,border-color .12s;
+}
+.sticker-btn:hover{transform:scale(1.2);border-color:var(--rose)}
+
+/* text tool */
+.text-tool{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.text-tool input, .text-tool select{
+  padding:8px 12px; border:1.5px solid #f0d0df; border-radius:10px;
+  font-size:13px; color:var(--ink); outline:none;
+  transition:border-color .15s;
+  font-family:'DM Sans',sans-serif;
+}
+.text-tool input:focus,.text-tool select:focus{border-color:var(--rose)}
+.text-tool .color-row{display:flex;gap:6px;flex-wrap:wrap}
+.tcol{
+  width:24px;height:24px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:.12s;
+}
+.tcol.active{border-color:var(--rose-d);transform:scale(1.2)}
+
+.btn-add-text {
+  width:100%;padding:10px;border-radius:20px;border:none;
+  background:var(--rose-l);color:var(--rose-d);
+  font-weight:600;font-size:13px;cursor:pointer;transition:.15s;
+}
+.btn-add-text:hover{background:var(--rose);color:white}
+
+/* delete hint */
+.delete-hint{
+  font-size:11px;color:var(--muted);text-align:center;
+  margin-bottom:10px;
+}
+
+.editor-actions{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.btn-dl{
+  width:100%;padding:14px;border-radius:50px;border:none;
+  background:linear-gradient(135deg,#f472b6,#ec4899);
+  color:white;font-family:'Playfair Display',serif;
+  font-size:16px;cursor:pointer;
+  box-shadow:0 8px 24px rgba(236,72,153,.3);
+  transition:transform .18s,box-shadow .18s;
+}
+.btn-dl:hover{transform:translateY(-2px)}
+.btn-retake{
+  width:100%;padding:12px;border-radius:50px;
+  border:1.5px solid #f0d0df;background:transparent;
+  color:var(--rose-d);font-size:13px;font-weight:500;cursor:pointer;
+  transition:background .15s;
+}
+.btn-retake:hover{background:var(--rose-l)}
+
+/* ─── UTILS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.f-normal{filter:none}
+.f-vintage{filter:sepia(.55) contrast(1.1) brightness(.97)}
+.f-bw{filter:grayscale(1) contrast(1.05)}
+.f-pinkish{filter:hue-rotate(-25deg) saturate(1.7) brightness(1.03)}
+.f-dreamy{filter:brightness(1.1) saturate(.75) blur(.35px)}
+.f-vivid{filter:saturate(1.9) contrast(1.15)}
+.f-warm{filter:sepia(.3) saturate(1.4) brightness(1.05)}
+.f-cool{filter:hue-rotate(30deg) saturate(1.2) brightness(1.03)}
+.f-fade{filter:contrast(.85) brightness(1.12) saturate(.7)}
+.f-cherry{filter:hue-rotate(-40deg) saturate(2) brightness(.95)}
+.f-matte{filter:contrast(.9) brightness(1.05) saturate(.6) sepia(.1)}
+.f-glam{filter:contrast(1.2) brightness(1.08) saturate(1.5) hue-rotate(-10deg)}
+
+@media(max-width:480px){
+  .controls-grid{grid-template-columns:1fr}
+  .cam-card,.editor-card{padding:18px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ░░░ LANDING PAGE ░░░ -->
+<div class="page active" id="pgLanding">
+  <div class="hearts" id="heartsContainer"></div>
+  <div class="hero-strips">
+    <div class="hero-strip" style="--r:-8deg">
+      <div class="ph"></div><div class="ph"></div><div class="ph"></div>
+    </div>
+    <div class="hero-strip" style="--r:7deg">
+      <div class="ph"></div><div class="ph"></div><div class="ph"></div>
+    </div>
+    <div class="hero-strip" style="--r:5deg">
+      <div class="ph"></div><div class="ph"></div>
+    </div>
+    <div class="hero-strip" style="--r:-6deg">
+      <div class="ph"></div><div class="ph"></div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="landing-nav">
+    <div class="nav-logo">🎀 Pinky <span>Booth</span></div>
+  </nav>
+
+  <!-- HERO CENTER -->
+  <div class="landing-body">
+    <div class="hero-center">
+      <div class="hero-title">Pinky<br/><span>Booth</span></div>
+      <div class="hero-sub">Capture the moment, cherish the magic,<br/>relive the love — one strip at a time.</div>
+      <button class="hero-cta" onclick="goTo('pgLayout')">✦ Start Now ✦</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM SECTION -->
+  <div class="landing-bottom">
+
+    <!-- Animated preview strips -->
+    <div class="preview-strips-row">
+      <div class="pstrip pink">
+        <div class="ps-ph"></div><div class="ps-ph"></div><div class="ps-ph"></div>
+      </div>
+      <div class="pstrip">
+        <div class="ps-ph"></div><div class="ps-ph"></div><div class="ps-ph"></div><div class="ps-ph"></div>
+      </div>
+      <div class="pstrip dark">
+        <div class="ps-ph"></div><div class="ps-ph"></div><div class="ps-ph"></div>
+      </div>
+      <div class="pstrip mint">
+        <div class="ps-ph"></div><div class="ps-ph"></div>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="how-it-works">
+      <div class="how-step">
+        <div class="step-icon">🖼</div>
+        <div class="step-num">Step 1</div>
+        <div class="step-label">Pick a Layout</div>
+      </div>
+      <div class="how-divider"></div>
+      <div class="how-step">
+        <div class="step-icon">📸</div>
+        <div class="step-num">Step 2</div>
+        <div class="step-label">Snap & Decorate</div>
+      </div>
+      <div class="how-divider"></div>
+      <div class="how-step">
+        <div class="step-icon">💾</div>
+        <div class="step-num">Step 3</div>
+        <div class="step-label">Download Strip</div>
+      </div>
+    </div>
+    <div class="hero-note">xoxo, Pinky Booth</div>
+
+  </div>
+</div>
+
+<!-- ░░░ LAYOUT PICKER PAGE ░░░ -->
+<div class="page" id="pgLayout">
+  <div style="display:flex;flex-direction:column;align-items:center;padding:40px 16px 60px;">
+    <div class="layout-header">
+      <h2>Choose Your Layout</h2>
+      <p>Select a photo strip format to get started</p>
+    </div>
+    <div class="layout-grid" id="layoutGrid">
+
+      <div class="layout-card" data-shots="3" data-ratio="4/3" data-layout="classic" onclick="selectLayout(this)">
+        <div class="lc-preview">
+          <div class="lc-ph" style="aspect-ratio:4/3"></div>
+          <div class="lc-ph" style="aspect-ratio:4/3"></div>
+          <div class="lc-ph" style="aspect-ratio:4/3"></div>
+        </div>
+        <div class="lc-name">Classic</div>
+        <div class="lc-desc">3 photos · 4:3</div>
+      </div>
+
+      <div class="layout-card" data-shots="4" data-ratio="4/3" data-layout="classic4" onclick="selectLayout(this)">
+        <div class="lc-preview">
+          <div class="lc-ph" style="aspect-ratio:4/3"></div>
+          <div class="lc-ph" style="aspect-ratio:4/3"></div>
+          <div class="lc-ph" style="aspect-ratio:4/3"></div>
+          <div class="lc-ph" style="aspect-ratio:4/3"></div>
+        </div>
+        <div class="lc-name">Standard</div>
+        <div class="lc-desc">4 photos · 4:3</div>
+      </div>
+
+      <div class="layout-card" data-shots="4" data-ratio="1/1" data-layout="square" onclick="selectLayout(this)">
+        <div class="lc-preview">
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+        </div>
+        <div class="lc-name">Square</div>
+        <div class="lc-desc">4 photos · 1:1</div>
+        <div class="badge-new">NEW</div>
+      </div>
+
+      <div class="layout-card" data-shots="2" data-ratio="16/9" data-layout="wide" onclick="selectLayout(this)">
+        <div class="lc-preview" style="flex-direction:column">
+          <div class="lc-ph" style="aspect-ratio:16/9;width:100%"></div>
+          <div class="lc-ph" style="aspect-ratio:16/9;width:100%"></div>
+        </div>
+        <div class="lc-name">Widescreen</div>
+        <div class="lc-desc">2 photos · 16:9</div>
+        <div class="badge-new">NEW</div>
+      </div>
+
+      <div class="layout-card" data-shots="6" data-ratio="1/1" data-layout="grid" onclick="selectLayout(this)">
+        <div class="lc-preview" style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:64px">
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+          <div class="lc-ph" style="aspect-ratio:1/1"></div>
+        </div>
+        <div class="lc-name">Grid 2×3</div>
+        <div class="lc-desc">6 photos · Square</div>
+        <div class="badge-new">NEW</div>
+      </div>
+
+    </div>
+    <button class="btn-next" id="btnToCamera" onclick="goToCamera()" disabled style="opacity:.5">
+      Continue →
+    </button>
+  </div>
+</div>
+
+<!-- ░░░ CAMERA PAGE ░░░ -->
+<div class="page" id="pgCamera">
+  <div class="cam-card" style="margin:0 auto; width:100%; max-width:540px;">
+    <div class="cam-topbar">
+      <div class="wordmark">Pinky <span>Booth</span></div>
+      <button class="btn-icon" onclick="goTo('pgLayout')" title="Change layout">↩</button>
+    </div>
+
+    <div class="camera-wrap ratio-43" id="cameraWrap">
+      <div class="flash" id="flash"></div>
+      <div id="countdown">3</div>
+      <span class="shot-badge" id="shotBadge">1/3</span>
+      <video id="video" autoplay playsinline class="f-normal"></video>
+    </div>
+
+    <div class="progress-dots" id="progressDots"></div>
+
+    <!-- FILTER STRIP -->
+    <div class="section-title">Filter</div>
+    <div class="filter-scroll" id="filterScroll"></div>
+
+    <!-- FRAME -->
+    <div class="section-title">Frame Style</div>
+    <div class="frame-tabs">
+      <button class="ftab active" onclick="showFrameTab('solid',this)">Solid</button>
+      <button class="ftab" onclick="showFrameTab('pattern',this)">Pattern</button>
+      <button class="ftab" onclick="showFrameTab('gradient',this)">Gradient</button>
+    </div>
+    <div class="frame-options" id="frameOptions"></div>
+
+    <div class="controls-grid">
+      <div class="ctrl-block">
+        <div class="section-title">Shots</div>
+        <div class="count-row" id="shotCountRow"></div>
+      </div>
+      <div class="ctrl-block">
+        <div class="section-title">Timer</div>
+        <div class="count-row" id="timerRow"></div>
+      </div>
+    </div>
+
+    <button class="btn-start" id="startBtn">✦ Start Capturing</button>
+  </div>
+</div>
+
+<!-- ░░░ EDITOR PAGE ░░░ -->
+<div class="page" id="pgEditor">
+  <div class="editor-card" style="margin:0 auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--rose-d)">
+        ✨ Your <span style="font-style:italic;color:var(--rose)">Memories</span>
+      </div>
+      <button class="btn-icon" onclick="goTo('pgCamera')" title="Retake">↩</button>
+    </div>
+
+    <div class="editor-layout">
+      <!-- Strip preview (canvas + absolute stickers) -->
+      <div class="strip-preview-wrap" id="stripPreviewWrap">
+        <canvas id="editorCanvas"></canvas>
+        <!-- stickers added here dynamically -->
+      </div>
+
+      <!-- Sidebar -->
+      <div class="editor-sidebar">
+        <div class="etab-row">
+          <button class="etab active" onclick="showEtab('stickers',this)">Stickers</button>
+          <button class="etab" onclick="showEtab('text',this)">Text</button>
+          <button class="etab" onclick="showEtab('adjust',this)">Adjust</button>
+        </div>
+
+        <!-- Stickers panel -->
+        <div id="panelStickers">
+          <div class="section-title" style="margin-bottom:8px">Cute</div>
+          <div class="sticker-grid" id="stickerGridCute"></div>
+          <div class="section-title" style="margin-bottom:8px;margin-top:10px">Aesthetic</div>
+          <div class="sticker-grid" id="stickerGridAesthetic"></div>
+          <div class="section-title" style="margin-bottom:8px;margin-top:10px">KPOP</div>
+          <div class="sticker-grid" id="stickerGridKpop"></div>
+          <div class="delete-hint" id="deleteHint" style="display:none">
+            Click selected sticker again to delete 🗑
+          </div>
+        </div>
+
+        <!-- Text panel -->
+        <div id="panelText" style="display:none">
+          <div class="text-tool">
+            <input id="textInput" type="text" placeholder="Type something cute..." maxlength="40"/>
+            <select id="fontSelect">
+              <option value="'Dancing Script',cursive">Dancing Script (handwrite)</option>
+              <option value="'Playfair Display',serif">Playfair Display (elegant)</option>
+              <option value="'DM Sans',sans-serif">DM Sans (clean)</option>
+            </select>
+            <input id="sizeInput" type="range" min="14" max="60" value="28" style="accent-color:var(--rose)"/>
+            <div class="color-row">
+              <div class="tcol active" style="background:#f472b6" data-col="#f472b6" onclick="selectTextCol(this)"></div>
+              <div class="tcol" style="background:#be185d" data-col="#be185d" onclick="selectTextCol(this)"></div>
+              <div class="tcol" style="background:#ffffff; border:1.5px solid #f0d0df" data-col="#ffffff" onclick="selectTextCol(this)"></div>
+              <div class="tcol" style="background:#1a0a12" data-col="#1a0a12" onclick="selectTextCol(this)"></div>
+              <div class="tcol" style="background:#a78bfa" data-col="#a78bfa" onclick="selectTextCol(this)"></div>
+              <div class="tcol" style="background:#34d399" data-col="#34d399" onclick="selectTextCol(this)"></div>
+            </div>
+          </div>
+          <button class="btn-add-text" onclick="addText()">+ Add Text</button>
+        </div>
+
+        <!-- Adjust panel -->
+        <div id="panelAdjust" style="display:none">
+          <div class="text-tool">
+            <div class="section-title">Frame Color Override</div>
+            <input type="color" id="frameColorPicker" value="#f472b6"
+              style="width:100%;height:38px;border:1.5px solid #f0d0df;border-radius:10px;cursor:pointer;padding:2px"
+              oninput="liveFrameColor(this.value)"/>
+            <div class="section-title" style="margin-top:8px">Brightness</div>
+            <input type="range" id="brightnessSlider" min="80" max="130" value="100"
+              style="width:100%;accent-color:var(--rose)" oninput="liveAdjust()"/>
+            <div class="section-title" style="margin-top:8px">Contrast</div>
+            <input type="range" id="contrastSlider" min="80" max="130" value="100"
+              style="width:100%;accent-color:var(--rose)" oninput="liveAdjust()"/>
+          </div>
+        </div>
+
+        <div class="editor-actions">
+          <button class="btn-dl" id="downloadBtn">↓ Download Strip</button>
+          <button class="btn-retake" onclick="location.reload()">Start Over</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- hidden canvases -->
+<canvas id="procCanvas" style="display:none"></canvas>
+<canvas id="stripCanvas" style="display:none"></canvas>
+
+<script>
+/* ════════════════════════════════════
+   STATE
+════════════════════════════════════ */
+const S = {
+  layout: null,   // {shots, ratio, layout}
+  frame: { type:'solid', value:'#f472b6' },
+  filter: 'f-normal',
+  shotCount: 3,
+  timer: 3,
+  capturedFrames: [],  // ImageData per shot
+  adjustBrightness: 100,
+  adjustContrast: 100,
+  liveFrameColor: null,
+  selectedSticker: null,
+  stickers: [],  // {el, x, y, emoji}
+};
+
+/* ════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ════════════════════════════════════
+   LANDING — HEARTS
+════════════════════════════════════ */
+const HEARTS = ['🩷','💗','💕','✦','🎀','✿','♡'];
+function spawnHeart() {
+  const el = document.createElement('div');
+  el.className = 'heart';
+  el.innerText = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+  el.style.left = Math.random()*100+'vw';
+  el.style.animationDuration = (Math.random()*8+6)+'s';
+  el.style.animationDelay = Math.random()*4+'s';
+  el.style.fontSize = (Math.random()*1.2+.8)+'rem';
+  document.getElementById('heartsContainer').appendChild(el);
+  el.addEventListener('animationend',()=>{el.remove();spawnHeart()});
+}
+for(let i=0;i<12;i++) spawnHeart();
+
+/* ════════════════════════════════════
+   LAYOUT PICKER
+════════════════════════════════════ */
+function selectLayout(el) {
+  document.querySelectorAll('.layout-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  S.layout = {
+    shots: +el.dataset.shots,
+    ratio: el.dataset.ratio,
+    layout: el.dataset.layout,
+  };
+  S.shotCount = S.layout.shots;
+  const btn = document.getElementById('btnToCamera');
+  btn.disabled = false; btn.style.opacity = '1';
+}
+
+function goToCamera() {
+  if(!S.layout) return;
+  setupCamera();
+  goTo('pgCamera');
+}
+
+/* ════════════════════════════════════
+   CAMERA SETUP
+════════════════════════════════════ */
+const FILTERS = [
+  {id:'f-normal',  name:'Natural', emoji:'🌸'},
+  {id:'f-warm',    name:'Warm',    emoji:'🌅'},
+  {id:'f-cool',    name:'Cool',    emoji:'🧊'},
+  {id:'f-vintage', name:'Vintage', emoji:'📷'},
+  {id:'f-bw',      name:'B&W',     emoji:'🖤'},
+  {id:'f-pinkish', name:'Pinkish', emoji:'💗'},
+  {id:'f-dreamy',  name:'Dreamy',  emoji:'☁️'},
+  {id:'f-fade',    name:'Fade',    emoji:'🌫️'},
+  {id:'f-cherry',  name:'Cherry',  emoji:'🍒'},
+  {id:'f-matte',   name:'Matte',   emoji:'🎞️'},
+  {id:'f-vivid',   name:'Vivid',   emoji:'✨'},
+  {id:'f-glam',    name:'Glam',    emoji:'💄'},
+];
+
+const FRAMES = {
+  solid: [
+    {cls:'', style:'background:#f472b6', value:'#f472b6'},
+    {cls:'', style:'background:#ffffff;border:1.5px solid #e0c0ce', value:'#ffffff'},
+    {cls:'', style:'background:#1a0a12', value:'#1a0a12'},
+    {cls:'', style:'background:#a78bfa', value:'#a78bfa'},
+    {cls:'', style:'background:#34d399', value:'#34d399'},
+    {cls:'', style:'background:#fbbf24', value:'#fbbf24'},
+    {cls:'', style:'background:#fb7185', value:'#fb7185'},
+    {cls:'', style:'background:#38bdf8', value:'#38bdf8'},
+  ],
+  pattern: [
+    {cls:'pat-polka',   value:'pat-polka',   label:'Polka'},
+    {cls:'pat-star',    value:'pat-star',    label:'Stars'},
+    {cls:'pat-stripe',  value:'pat-stripe',  label:'Stripe'},
+    {cls:'pat-floral',  value:'pat-floral',  label:'Floral'},
+    {cls:'pat-checker', value:'pat-checker', label:'Checker'},
+    {cls:'pat-grid',    value:'pat-grid',    label:'Grid'},
+  ],
+  gradient: [
+    {cls:'grad-sunset',   value:'grad-sunset',   label:'Sunset'},
+    {cls:'grad-sky',      value:'grad-sky',       label:'Sky'},
+    {cls:'grad-lavender', value:'grad-lavender',  label:'Lavender'},
+    {cls:'grad-mint',     value:'grad-mint',      label:'Mint'},
+  ],
+};
+
+let currentFrameTab = 'solid';
+
+function setupCamera() {
+  // Set aspect ratio class
+  const wrap = document.getElementById('cameraWrap');
+  wrap.className = 'camera-wrap ratio-43';
+  if(S.layout.ratio === '1/1') wrap.className = 'camera-wrap ratio-11';
+  else if(S.layout.ratio === '16/9') wrap.className = 'camera-wrap ratio-169';
+
+  // Shot count buttons
+  const scr = document.getElementById('shotCountRow');
+  scr.innerHTML = '';
+  [S.layout.shots].concat([]).forEach(()=>{});
+  // allow ±1 from layout default
+  const opts = [Math.max(1,S.layout.shots-1), S.layout.shots, Math.min(8,S.layout.shots+1)];
+  [...new Set(opts)].forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'count-btn' + (n===S.layout.shots?' active':'');
+    b.textContent = n;
+    b.onclick = () => {
+      S.shotCount = n;
+      document.querySelectorAll('#shotCountRow .count-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      buildDots();
+    };
+    scr.appendChild(b);
+  });
+  S.shotCount = S.layout.shots;
+
+  // Timer buttons
+  const tr = document.getElementById('timerRow');
+  tr.innerHTML = '';
+  [3,5,10].forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'count-btn' + (t===3?' active':'');
+    b.textContent = t+'s';
+    b.onclick = () => {
+      S.timer = t;
+      document.querySelectorAll('#timerRow .count-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+    };
+    tr.appendChild(b);
+  });
+
+  // Filters
+  const fs = document.getElementById('filterScroll');
+  fs.innerHTML = '';
+  FILTERS.forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'filter-thumb' + (f.id==='f-normal'?' active':'');
+    div.innerHTML = `<div class="fpreview">${f.emoji}</div><div class="fname">${f.name}</div>`;
+    div.onclick = () => {
+      S.filter = f.id;
+      document.getElementById('video').className = f.id;
+      document.querySelectorAll('.filter-thumb').forEach(x=>x.classList.remove('active'));
+      div.classList.add('active');
+    };
+    fs.appendChild(div);
+  });
+
+  // Default frame options
+  showFrameTab('solid', document.querySelector('.ftab'));
+
+  // Progress dots
+  buildDots();
+
+  // Camera
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false})
+    .then(stream => { document.getElementById('video').srcObject = stream; })
+    .catch(() => alert('Camera access denied or unavailable.'));
+}
+
+function showFrameTab(tab, el) {
+  currentFrameTab = tab;
+  document.querySelectorAll('.ftab').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  const fo = document.getElementById('frameOptions');
+  fo.innerHTML = '';
+  FRAMES[tab].forEach((f,i) => {
+    const d = document.createElement('div');
+    d.className = 'fopt ' + f.cls + (i===0?' active':'');
+    if(f.style) d.setAttribute('style', f.style);
+    d.dataset.val = f.value;
+    d.onclick = () => {
+      S.frame = {type: tab, value: f.value};
+      document.querySelectorAll('.fopt').forEach(x=>x.classList.remove('active'));
+      d.classList.add('active');
+    };
+    fo.appendChild(d);
+  });
+  if(FRAMES[tab].length > 0) {
+    S.frame = {type: tab, value: FRAMES[tab][0].value};
+  }
+}
+
+function buildDots() {
+  const pd = document.getElementById('progressDots');
+  pd.innerHTML = '';
+  for(let i=0;i<S.shotCount;i++){
+    const d = document.createElement('div');
+    d.className = 'pdot';
+    pd.appendChild(d);
+  }
+}
+function updateDots(n) {
+  document.querySelectorAll('.pdot').forEach((d,i)=>d.classList.toggle('filled',i<n));
+}
+
+/* ════════════════════════════════════
+   SHOOTING
+════════════════════════════════════ */
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+function runCountdown(sec) {
+  return new Promise(resolve => {
+    const el = document.getElementById('countdown');
+    let c = sec;
+    el.style.display = 'block';
+    el.innerText = c;
+    const t = setInterval(() => {
+      c--;
+      if(c<=0){ clearInterval(t); el.style.display='none'; resolve(); }
+      else el.innerText = c;
+    },1000);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('startBtn');
+  btn.disabled = true;
+  const badge = document.getElementById('shotBadge');
+  badge.style.display = 'block';
+  S.capturedFrames = [];
+  updateDots(0);
+
+  const video = document.getElementById('video');
+  const proc  = document.getElementById('procCanvas');
+  const pCtx  = proc.getContext('2d');
+
+  // Determine photo dimensions
+  let pw = 560, ph = 420;
+  const ratio = S.layout.ratio;
+  if(ratio === '1/1')  { pw=500; ph=500; }
+  if(ratio === '16/9') { pw=640; ph=360; }
+
+  proc.width=pw; proc.height=ph;
+
+  for(let i=0;i<S.shotCount;i++){
+    badge.innerText = `${i+1} / ${S.shotCount}`;
+    await runCountdown(S.timer);
+
+    // apply filter to canvas
+    const fmap = {
+      'f-vintage':'sepia(.55) contrast(1.1) brightness(.97)',
+      'f-bw':'grayscale(1) contrast(1.05)',
+      'f-pinkish':'hue-rotate(-25deg) saturate(1.7) brightness(1.03)',
+      'f-dreamy':'brightness(1.1) saturate(.75)',
+      'f-vivid':'saturate(1.9) contrast(1.15)',
+      'f-warm':'sepia(.3) saturate(1.4) brightness(1.05)',
+      'f-cool':'hue-rotate(30deg) saturate(1.2) brightness(1.03)',
+      'f-fade':'contrast(.85) brightness(1.12) saturate(.7)',
+      'f-cherry':'hue-rotate(-40deg) saturate(2) brightness(.95)',
+      'f-matte':'contrast(.9) brightness(1.05) saturate(.6) sepia(.1)',
+      'f-glam':'contrast(1.2) brightness(1.08) saturate(1.5) hue-rotate(-10deg)',
+      'f-normal':'none',
+    };
+    pCtx.filter = fmap[S.filter] || 'none';
+    pCtx.save();
+    pCtx.scale(-1,1);
+    pCtx.drawImage(video,-pw,0,pw,ph);
+    pCtx.restore();
+    pCtx.filter='none';
+
+    S.capturedFrames.push(pCtx.getImageData(0,0,pw,ph));
+
+    // flash
+    const fl = document.getElementById('flash');
+    fl.classList.add('go');
+    setTimeout(()=>fl.classList.remove('go'),150);
+
+    updateDots(i+1);
+    if(i<S.shotCount-1) await sleep(800);
+  }
+
+  badge.style.display='none';
+  buildStripAndGoEditor();
+});
+
+/* ════════════════════════════════════
+   BUILD STRIP + GO TO EDITOR
+════════════════════════════════════ */
+function buildStripAndGoEditor() {
+  const strip = document.getElementById('stripCanvas');
+  const sCtx  = strip.getContext('2d');
+
+  const n = S.capturedFrames.length;
+  const ratio = S.layout.ratio;
+  const isGrid = S.layout.layout === 'grid';
+
+  let pw=560, ph=420;
+  if(ratio==='1/1')  {pw=500;ph=500}
+  if(ratio==='16/9') {pw=640;ph=360}
+
+  const MARGIN = 32;
+  const FOOTER = 80;
+
+  if(isGrid) {
+    // 2-column grid
+    const cols=2, rows=Math.ceil(n/2);
+    const cellW = pw/2;
+    const cellH = cellW*(ph/pw);
+    strip.width  = pw + MARGIN*2;
+    strip.height = MARGIN + rows*(cellH+MARGIN) + FOOTER;
+    drawFrameBg(sCtx, strip.width, strip.height);
+    S.capturedFrames.forEach((frame,i)=>{
+      const col=i%2, row=Math.floor(i/2);
+      const x=MARGIN+col*(cellW+MARGIN/2);
+      const y=MARGIN+row*(cellH+MARGIN);
+      const tmp=document.createElement('canvas');
+      tmp.width=pw; tmp.height=ph;
+      tmp.getContext('2d').putImageData(frame,0,0);
+      roundClip(sCtx,x,y,cellW,cellH,8,()=>sCtx.drawImage(tmp,x,y,cellW,cellH));
+    });
+  } else {
+    strip.width  = pw + MARGIN*2;
+    strip.height = MARGIN + n*(ph+MARGIN) + FOOTER;
+    drawFrameBg(sCtx, strip.width, strip.height);
+    S.capturedFrames.forEach((frame,i)=>{
+      const x=MARGIN, y=MARGIN+i*(ph+MARGIN);
+      const tmp=document.createElement('canvas');
+      tmp.width=pw; tmp.height=ph;
+      tmp.getContext('2d').putImageData(frame,0,0);
+      roundClip(sCtx,x,y,pw,ph,10,()=>sCtx.drawImage(tmp,x,y,pw,ph));
+    });
+  }
+
+  drawFooter(sCtx, strip.width, strip.height, FOOTER);
+
+  // put strip into editor canvas
+  const ec = document.getElementById('editorCanvas');
+  ec.width  = strip.width;
+  ec.height = strip.height;
+  ec.getContext('2d').drawImage(strip,0,0);
+
+  // clear old stickers
+  document.querySelectorAll('.sticker-on-strip').forEach(e=>e.remove());
+  S.stickers = [];
+
+  goTo('pgEditor');
+  setupEditor();
+}
+
+function drawFrameBg(ctx, w, h) {
+  const f = S.frame;
+  if(f.type==='solid') {
+    ctx.fillStyle = f.value;
+    ctx.fillRect(0,0,w,h);
+  } else if(f.type==='gradient') {
+    const gradMap = {
+      'grad-sunset': ['#fda4af','#fb923c'],
+      'grad-sky':    ['#bfdbfe','#a5f3fc'],
+      'grad-lavender':['#e9d5ff','#fbcfe8'],
+      'grad-mint':   ['#bbf7d0','#99f6e4'],
+    };
+    const cols = gradMap[f.value] || ['#f472b6','#ec4899'];
+    const g = ctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,cols[0]); g.addColorStop(1,cols[1]);
+    ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  } else {
+    // pattern — fill with a solid base + draw pattern on top
+    const patternBg = {
+      'pat-polka':   '#fff0f5',
+      'pat-star':    '#fff8fb',
+      'pat-stripe':  '#fce7f3',
+      'pat-floral':  '#fff0f5',
+      'pat-checker': '#ffffff',
+      'pat-grid':    '#ffffff',
+    };
+    ctx.fillStyle = patternBg[f.value] || '#fff0f5';
+    ctx.fillRect(0,0,w,h);
+    drawCanvasPattern(ctx, f.value, w, h);
+  }
+
+  // subtle grain overlay
+  ctx.globalAlpha = 0.045;
+  ctx.fillStyle = '#be185d';
+  for(let i=0;i<200;i++){
+    ctx.beginPath();
+    ctx.arc(Math.random()*w, Math.random()*h, Math.random()*2.5+.5, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+
+function drawCanvasPattern(ctx, pat, w, h) {
+  ctx.save();
+  ctx.globalAlpha = 0.55;
+  if(pat==='pat-polka') {
+    ctx.fillStyle='#f472b6';
+    for(let x=8;x<w;x+=20) for(let y=8;y<h;y+=20){
+      ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill();
+    }
+  } else if(pat==='pat-star') {
+    ctx.fillStyle='#f472b6'; ctx.font='14px serif'; ctx.textAlign='center';
+    for(let x=10;x<w;x+=22) for(let y=18;y<h;y+=22) ctx.fillText('✦',x,y);
+  } else if(pat==='pat-stripe') {
+    ctx.strokeStyle='#f9a8d4'; ctx.lineWidth=2;
+    for(let x=-h;x<w+h;x+=14){
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+h,h); ctx.stroke();
+    }
+  } else if(pat==='pat-floral') {
+    ctx.font='18px serif'; ctx.textAlign='center';
+    for(let x=12;x<w;x+=28) for(let y=20;y<h;y+=28) ctx.fillText('🌸',x,y);
+  } else if(pat==='pat-checker') {
+    ctx.fillStyle='#fce7f3';
+    const sz=14;
+    for(let x=0;x<w;x+=sz) for(let y=0;y<h;y+=sz)
+      if(((x/sz)+(y/sz))%2===0){ ctx.fillRect(x,y,sz,sz); }
+  } else if(pat==='pat-grid') {
+    ctx.strokeStyle='#f9a8d4'; ctx.lineWidth=1;
+    for(let x=0;x<w;x+=16){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke(); }
+    for(let y=0;y<h;y+=16){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke(); }
+  }
+  ctx.restore();
+}
+
+function roundClip(ctx,x,y,w,h,r,draw) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath(); ctx.clip();
+  draw();
+  ctx.restore();
+}
+
+function drawFooter(ctx,w,h,fh) {
+  const cx=w/2, cy=h-fh/2-4;
+  const dark=['#1a0a12','#ffffff'].includes(S.frame.value);
+  const col = S.frame.value==='#ffffff' ? '#f472b6' : '#ffffff';
+  ctx.fillStyle=col;
+  ctx.font='italic bold 24px Georgia,serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('🎀 Pinky Booth 🎀',cx,cy-10);
+  ctx.font='500 13px Arial,sans-serif';
+  ctx.globalAlpha=.7;
+  ctx.fillText(new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}),cx,cy+16);
+  ctx.globalAlpha=1;
+}
+
+/* ════════════════════════════════════
+   EDITOR
+════════════════════════════════════ */
+const STICKERS = {
+  cute: ['🎀','🩷','💗','💕','🌸','🌷','🍓','🎂','🧁','🍬','🫧','🌈','⭐','✨','💫'],
+  aesthetic: ['✦','♡','✿','⊹','◌','☽','✧','⟡','◇','▸','≻','ᯓ★','✮','𓂃','𖦹'],
+  kpop: ['🐰','🐱','🐧','🦋','🌙','💎','🎤','📸','🎧','🪩','🫀','🤍','🫶','💌','🃏'],
+};
+
+let textColor = '#f472b6';
+
+function setupEditor() {
+  // populate sticker grids
+  ['cute','aesthetic','kpop'].forEach(cat => {
+    const grid = document.getElementById('stickerGrid'+cat.charAt(0).toUpperCase()+cat.slice(1));
+    grid.innerHTML='';
+    STICKERS[cat].forEach(em => {
+      const b=document.createElement('button');
+      b.className='sticker-btn'; b.textContent=em;
+      b.onclick=()=>addSticker(em);
+      grid.appendChild(b);
+    });
+  });
+
+  // download
+  document.getElementById('downloadBtn').onclick = downloadStrip;
+}
+
+function showEtab(tab,el) {
+  ['Stickers','Text','Adjust'].forEach(t=>{
+    document.getElementById('panel'+t).style.display = t.toLowerCase()===tab?'block':'none';
+  });
+  document.querySelectorAll('.etab').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function addSticker(emoji) {
+  const wrap = document.getElementById('stripPreviewWrap');
+  const ec   = document.getElementById('editorCanvas');
+  const el   = document.createElement('div');
+  el.className = 'sticker-on-strip';
+  el.textContent = emoji;
+  el.style.left = (ec.offsetWidth/2 - 16)+'px';
+  el.style.top  = (ec.offsetHeight/2 - 16)+'px';
+  el.style.fontSize = '36px';
+
+  makeDraggable(el);
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    if(el.classList.contains('selected')) {
+      el.remove(); S.selectedSticker=null;
+      document.getElementById('deleteHint').style.display='none';
+    } else {
+      if(S.selectedSticker) S.selectedSticker.classList.remove('selected');
+      S.selectedSticker=el; el.classList.add('selected');
+      document.getElementById('deleteHint').style.display='block';
+    }
+  });
+  wrap.appendChild(el);
+}
+
+function addText() {
+  const txt = document.getElementById('textInput').value.trim();
+  if(!txt) return;
+  const font = document.getElementById('fontSelect').value;
+  const size = document.getElementById('sizeInput').value;
+  const wrap = document.getElementById('stripPreviewWrap');
+  const ec   = document.getElementById('editorCanvas');
+
+  const el = document.createElement('div');
+  el.className = 'sticker-on-strip';
+  el.textContent = txt;
+  el.style.fontFamily = font;
+  el.style.fontSize = size+'px';
+  el.style.color = textColor;
+  el.style.fontWeight = '700';
+  el.style.left = (ec.offsetWidth/2 - 60)+'px';
+  el.style.top  = (ec.offsetHeight/2 - 20)+'px';
+  el.style.whiteSpace = 'nowrap';
+  el.style.textShadow = '0 1px 6px rgba(0,0,0,.25)';
+  makeDraggable(el);
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    if(el.classList.contains('selected')) {
+      el.remove(); S.selectedSticker=null;
+      document.getElementById('deleteHint').style.display='none';
+    } else {
+      if(S.selectedSticker) S.selectedSticker.classList.remove('selected');
+      S.selectedSticker=el; el.classList.add('selected');
+      document.getElementById('deleteHint').style.display='block';
+    }
+  });
+  wrap.appendChild(el);
+  document.getElementById('textInput').value='';
+}
+
+function selectTextCol(el) {
+  textColor = el.dataset.col;
+  document.querySelectorAll('.tcol').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function liveFrameColor(col) {
+  S.liveFrameColor = col;
+  redrawStrip();
+}
+function liveAdjust() {
+  S.adjustBrightness = document.getElementById('brightnessSlider').value;
+  S.adjustContrast   = document.getElementById('contrastSlider').value;
+  redrawStrip();
+}
+
+function redrawStrip() {
+  const strip = document.getElementById('stripCanvas');
+  const sCtx  = strip.getContext('2d');
+  if(S.liveFrameColor) {
+    const orig = S.frame.value;
+    S.frame = {type:'solid', value: S.liveFrameColor};
+  }
+  const n = S.capturedFrames.length;
+  const ratio = S.layout.ratio;
+  const isGrid = S.layout.layout==='grid';
+  let pw=560,ph=420;
+  if(ratio==='1/1'){pw=500;ph=500}
+  if(ratio==='16/9'){pw=640;ph=360}
+  const MARGIN=32,FOOTER=80;
+
+  sCtx.filter=`brightness(${S.adjustBrightness}%) contrast(${S.adjustContrast}%)`;
+  drawFrameBg(sCtx,strip.width,strip.height);
+  sCtx.filter='none';
+
+  if(isGrid) {
+    const cellW=pw/2, cellH=cellW*(ph/pw);
+    S.capturedFrames.forEach((frame,i)=>{
+      const col=i%2,row=Math.floor(i/2);
+      const x=MARGIN+col*(cellW+MARGIN/2), y=MARGIN+row*(cellH+MARGIN);
+      const tmp=document.createElement('canvas');
+      tmp.width=pw;tmp.height=ph;
+      tmp.getContext('2d').putImageData(frame,0,0);
+      roundClip(sCtx,x,y,cellW,cellH,8,()=>sCtx.drawImage(tmp,x,y,cellW,cellH));
+    });
+  } else {
+    S.capturedFrames.forEach((frame,i)=>{
+      const x=MARGIN, y=MARGIN+i*(ph+MARGIN);
+      const tmp=document.createElement('canvas');
+      tmp.width=pw;tmp.height=ph;
+      tmp.getContext('2d').putImageData(frame,0,0);
+      roundClip(sCtx,x,y,pw,ph,10,()=>sCtx.drawImage(tmp,x,y,pw,ph));
+    });
+  }
+  drawFooter(sCtx,strip.width,strip.height,FOOTER);
+
+  const ec=document.getElementById('editorCanvas');
+  ec.getContext('2d').drawImage(strip,0,0);
+}
+
+/* ── DRAGGABLE ── */
+function makeDraggable(el) {
+  let ox=0,oy=0,mx=0,my=0,dragging=false;
+  const wrap = document.getElementById('stripPreviewWrap');
+
+  el.addEventListener('pointerdown',e=>{
+    if(e.target!==el) return;
+    dragging=true;
+    mx=e.clientX; my=e.clientY;
+    ox=el.offsetLeft; oy=el.offsetTop;
+    el.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!dragging) return;
+    const dx=e.clientX-mx, dy=e.clientY-my;
+    el.style.left=(ox+dx)+'px';
+    el.style.top=(oy+dy)+'px';
+    e.preventDefault();
+  });
+  el.addEventListener('pointerup',()=>dragging=false);
+}
+
+/* ── DOWNLOAD: flatten canvas + stickers ── */
+function downloadStrip() {
+  const ec   = document.getElementById('editorCanvas');
+  const wrap = document.getElementById('stripPreviewWrap');
+  const rect = ec.getBoundingClientRect();
+  const wrapRect = wrap.getBoundingClientRect();
+
+  // Create final canvas same size as strip canvas
+  const strip = document.getElementById('stripCanvas');
+  const final = document.createElement('canvas');
+  final.width  = strip.width;
+  final.height = strip.height;
+  const fCtx = final.getContext('2d');
+
+  // draw strip
+  fCtx.drawImage(strip,0,0);
+
+  // scale factor: canvas logical px vs displayed px
+  const scaleX = strip.width  / ec.offsetWidth;
+  const scaleY = strip.height / ec.offsetHeight;
+
+  // draw stickers
+  document.querySelectorAll('.sticker-on-strip').forEach(el=>{
+    el.classList.remove('selected');
+    const px = parseFloat(el.style.left);
+    const py = parseFloat(el.style.top);
+    const cx = px * scaleX;
+    const cy = py * scaleY;
+    const fs = parseFloat(el.style.fontSize||'36') * scaleX;
+    fCtx.font = `${el.style.fontWeight||'normal'} ${fs}px ${el.style.fontFamily||'serif'}`;
+    fCtx.fillStyle = el.style.color || '#f472b6';
+    fCtx.textBaseline='top';
+    if(el.style.textShadow) {
+      fCtx.shadowBlur=8; fCtx.shadowColor='rgba(0,0,0,.3)';
+    }
+    fCtx.fillText(el.textContent, cx, cy);
+    fCtx.shadowBlur=0;
+  });
+
+  const a = document.createElement('a');
+  a.download = `pinky-booth-${Date.now()}.png`;
+  a.href = final.toDataURL('image/png');
+  a.click();
+}
+
+/* deselect on outside click */
+document.addEventListener('click', e => {
+  if(!e.target.classList.contains('sticker-on-strip')) {
+    if(S.selectedSticker) {
+      S.selectedSticker.classList.remove('selected');
+      S.selectedSticker=null;
+      document.getElementById('deleteHint').style.display='none';
+    }
+  }
+});
+</script>
+</body>
+</html>
